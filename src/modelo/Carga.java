@@ -17,7 +17,8 @@ public class Carga {
         this.velocidadX = 0;
         this.velocidadY = 0;
     }
-////Hola
+    
+    ////Hola
     public void moverA(float x, float y) {
     }
 
@@ -25,21 +26,5 @@ public class Carga {
         return 0;
     }
 
-    public float getPosicionX() { return posicionX; }
-    public void setPosicionX(float posicionX) { this.posicionX = posicionX; }
 
-    public float getPosicionY() { return posicionY; }
-    public void setPosicionY(float posicionY) { this.posicionY = posicionY; }
-
-    public float getCarga() { return carga; }
-    public void setCarga(float carga) { this.carga = carga; }
-
-    public float getVelocidadX() { return velocidadX; }
-    public void setVelocidadX(float velocidadX) { this.velocidadX = velocidadX; }
-
-    public float getVelocidadY() { return velocidadY; }
-    public void setVelocidadY(float velocidadY) { this.velocidadY = velocidadY; }
-
-    public float getMasa() { return masa; }
-    public void setMasa(float masa) { this.masa = masa; }
 }
