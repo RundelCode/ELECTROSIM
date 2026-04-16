@@ -17,7 +17,7 @@ public class Carga {
         this.velocidadX = 0;
         this.velocidadY = 0;
     }
-
+////Hola
     public void moverA(float x, float y) {
     }
 
