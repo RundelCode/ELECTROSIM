@@ -19,10 +19,8 @@ public class Carga {
     }
 
     public void moverA(float x, float y) {
-    }
-
-    public float obtenerDistancia(Carga otraCarga) {
-        return 0;
+        this.posicionX = x;
+        this.posicionY = y;
     }
 
     public float getPosicionX() { return posicionX; }

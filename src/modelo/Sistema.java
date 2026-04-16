@@ -4,14 +4,12 @@ import java.util.ArrayList;
 
 public class Sistema {
 
-    private float constanteK;
     private float escalaPixelesAMetros;
     private ArrayList<Carga> cargas;
     private ArrayList<Fuerza> fuerzas;
     private ArrayList<DataSet> dataSets;
 
     public Sistema(float escalaPixelesAMetros) {
-        this.constanteK = 8.99e9f;
         this.escalaPixelesAMetros = escalaPixelesAMetros;
         this.cargas = new ArrayList<>();
         this.fuerzas = new ArrayList<>();
@@ -19,15 +17,18 @@ public class Sistema {
     }
 
     public void agregarCarga(Carga carga) {
+        cargas.add(carga);
     }
 
     public void eliminarCarga(int id) {
+        cargas.remove(id);
     }
 
     public void ejecutarSimulacion() {
     }
 
     public void limpiarEscena() {
+        cargas.clear();
     }
 
     public void ejecutarTick() {
@@ -35,9 +36,6 @@ public class Sistema {
 
     public void actualizarFisica() {
     }
-
-    public float getConstanteK() { return constanteK; }
-    public void setConstanteK(float constanteK) { this.constanteK = constanteK; }
 
     public float getEscalaPixelesAMetros() { return escalaPixelesAMetros; }
     public void setEscalaPixelesAMetros(float escalaPixelesAMetros) { this.escalaPixelesAMetros = escalaPixelesAMetros; }

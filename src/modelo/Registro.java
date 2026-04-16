@@ -18,8 +18,7 @@ public class Registro {
         this.fecha = LocalDateTime.now();
     }
 
-    public void crearEntrada(String descripcion) {
-    }
+    
 
     public void guardar() {
     }
