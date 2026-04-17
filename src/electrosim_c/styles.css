@@ -1,0 +1,33 @@
+.root {
+    -fx-background-color: #FFFFFF;
+}
+
+.contenedor {
+    -fx-padding: 20;
+}
+
+.titulo {
+    -fx-text-fill: #1B2563;
+    -fx-font: 120px "Poppins ExtraBold";
+    
+}
+
+.texto {
+    -fx-text-fill: #707070;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+}
+
+
+
+.button {
+    -fx-background-color: #1B2563;
+    -fx-text-fill: white;
+    -fx-font: 20px "Poppins ExtraBold";
+    -fx-background-radius: 8;
+}
+
+.button:hover {
+    -fx-background-color: #2B3992;
+}
