@@ -19,10 +19,19 @@ public class Carga {
     }
 
     public void moverA(float x, float y) {
+        this.posicionX = x;
+        this.posicionY = y;
     }
 
     public float obtenerDistancia(Carga otraCarga) {
-        return 0;
+        float dx = this.posicionX - otraCarga.posicionX;
+        float dy = this.posicionY - otraCarga.posicionY;
+        return (float) Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public void actualizarPosicion(float deltaTiempo) {
+        this.posicionX += velocidadX * deltaTiempo;
+        this.posicionY += velocidadY * deltaTiempo;
     }
 
     public float getPosicionX() { return posicionX; }
