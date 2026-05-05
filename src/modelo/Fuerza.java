@@ -2,41 +2,75 @@ package modelo;
 
 public class Fuerza {
 
+    private static final float K = 8.99e9f;
+
     private float magnitud;
     private float fuerzaX;
     private float fuerzaY;
+
     private Carga cargaOrigen;
     private Carga cargaDestino;
 
     public Fuerza(Carga cargaOrigen, Carga cargaDestino) {
         this.cargaOrigen = cargaOrigen;
         this.cargaDestino = cargaDestino;
-        this.magnitud = 0;
-        this.fuerzaX = 0;
-        this.fuerzaY = 0;
+
+        calcular();
     }
 
-    public void calcularMagnitud() {
+    private void calcular() {
+
+        float dx = cargaDestino.getPosicionX() - cargaOrigen.getPosicionX();
+        float dy = cargaDestino.getPosicionY() - cargaOrigen.getPosicionY();
+
+        float distancia = (float) Math.sqrt(dx * dx + dy * dy);
+
+        if (distancia < 1f) {
+            magnitud = 0;
+            fuerzaX = 0;
+            fuerzaY = 0;
+            return;
+        }
+
+        magnitud = (K * cargaOrigen.getCarga() * cargaDestino.getCarga())
+                / (distancia * distancia);
+
+        float nx = dx / distancia;
+        float ny = dy / distancia;
+
+        fuerzaX = magnitud * nx;
+        fuerzaY = magnitud * ny;
     }
 
-    public void obtenerDireccion() {
+    public boolean esRepulsion() {
+        return cargaOrigen.getCarga() * cargaDestino.getCarga() > 0;
     }
 
-    public void actualizar() {
+    public boolean esAtraccion() {
+        return cargaOrigen.getCarga() * cargaDestino.getCarga() < 0;
     }
 
-    public float getMagnitud() { return magnitud; }
-    public void setMagnitud(float magnitud) { this.magnitud = magnitud; }
+    public float getDistancia() {
+        return cargaOrigen.obtenerDistancia(cargaDestino);
+    }
 
-    public float getFuerzaX() { return fuerzaX; }
-    public void setFuerzaX(float fuerzaX) { this.fuerzaX = fuerzaX; }
+    public float getMagnitud() {
+        return magnitud;
+    }
 
-    public float getFuerzaY() { return fuerzaY; }
-    public void setFuerzaY(float fuerzaY) { this.fuerzaY = fuerzaY; }
+    public float getFuerzaX() {
+        return fuerzaX;
+    }
 
-    public Carga getCargaOrigen() { return cargaOrigen; }
-    public void setCargaOrigen(Carga cargaOrigen) { this.cargaOrigen = cargaOrigen; }
+    public float getFuerzaY() {
+        return fuerzaY;
+    }
 
-    public Carga getCargaDestino() { return cargaDestino; }
-    public void setCargaDestino(Carga cargaDestino) { this.cargaDestino = cargaDestino; }
+    public Carga getCargaOrigen() {
+        return cargaOrigen;
+    }
+
+    public Carga getCargaDestino() {
+        return cargaDestino;
+    }
 }

@@ -1,0 +1,99 @@
+.root {
+    -fx-background-color: #FFFFFF;
+}
+.contenedor {
+    -fx-padding: 20;
+}
+.titulo {
+    -fx-text-fill: #1B2563;
+    -fx-font: 40px "Poppins ExtraBold";
+}
+.texto {
+    -fx-text-fill: #707070;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+}
+.subtitulo {
+    -fx-text-fill: #707070;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-alignment: left;
+}
+.button {
+    -fx-background-color: #1B2563;
+    -fx-text-fill: white;
+    -fx-font: 20px "Poppins ExtraBold";
+    -fx-background-radius: 8;
+}
+.button:hover {
+    -fx-background-color: #2B3992;
+}
+.canvas-simulador {
+    -fx-background-color: black;
+}
+.panel-lateral {
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 20;
+}
+.panel-lateral {
+    -fx-background-color: #f4f4f4;
+    -fx-padding: 15;
+}
+.btn-primary {
+    -fx-background-color: #2c327d;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+}
+.btn-danger {
+    -fx-background-color: #b53030;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+}
+.card-carga {
+    -fx-background-color: #9aa0b5;
+    -fx-padding: 15;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: #6d7391;
+}
+
+.card-title {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.card-text {
+    -fx-text-fill: #e0e3ec;
+    -fx-font-size: 11px;
+}
+
+.separator {
+    -fx-background-color: #e0e3ec;
+}
+
+.text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+    -fx-border-width: 0 0 1 0;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+}
+
+.input-line {
+    -fx-background-color: transparent;
+    -fx-border-color: #e0e3ec;
+    -fx-border-width: 0 0 2 0;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 1 0 1 0;
+}
+
+.input-line:focused {
+    -fx-border-color: white;
+}
