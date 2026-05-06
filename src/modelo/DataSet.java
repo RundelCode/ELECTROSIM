@@ -1,44 +1,144 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DataSet {
 
-    private ArrayList<Float> muestrasFuerza;
-    private ArrayList<Float> muestrasDistancia;
-    private Carga cargaOrigen;
-    private Carga cargaDestino;
+    private List<DataPoint> puntos;
 
-    public DataSet(Carga cargaOrigen, Carga cargaDestino) {
-        this.cargaOrigen = cargaOrigen;
-        this.cargaDestino = cargaDestino;
-        this.muestrasFuerza = new ArrayList<>();
-        this.muestrasDistancia = new ArrayList<>();
+    public DataSet() {
+
+        puntos = new ArrayList<>();
     }
 
-    public void registrarPunto(float distancia, float fuerza) {
+    public void agregarPunto(
+            double x,
+            double y
+    ) {
+
+        if (!puntos.isEmpty()) {
+
+            DataPoint ultimo
+                    = puntos.get(
+                            puntos.size() - 1
+                    );
+
+            double dx
+                    = Math.abs(
+                            ultimo.getX() - x
+                    );
+
+            double dy
+                    = Math.abs(
+                            ultimo.getY() - y
+                    );
+
+            if (dx < 0.05 && dy < 0.05) {
+                return;
+            }
+        }
+
+        puntos.add(
+                new DataPoint(x, y)
+        );
     }
 
-    public void limpiarHistorial() {
+    public void limpiar() {
+
+        puntos.clear();
     }
 
-    public float[] generarEstadisticas() {
-        return null;
+    public List<DataPoint> getPuntos() {
+
+        return puntos;
     }
 
-    public String getEtiqueta() {
-        return null;
+    public double calcularAreaBajoCurva() {
+
+        if (puntos.size() < 2) {
+            return 0;
+        }
+
+        double area = 0;
+
+        for (int i = 0;
+                i < puntos.size() - 1;
+                i++) {
+
+            DataPoint p1 = puntos.get(i);
+
+            DataPoint p2
+                    = puntos.get(i + 1);
+
+            double base
+                    = p2.getX() - p1.getX();
+
+            double altura
+                    = (p1.getY() + p2.getY())
+                    / 2;
+
+            area += base * altura;
+        }
+
+        return Math.abs(area);
     }
 
-    public ArrayList<Float> getMuestrasFuerza() { return muestrasFuerza; }
-    public void setMuestrasFuerza(ArrayList<Float> muestrasFuerza) { this.muestrasFuerza = muestrasFuerza; }
+    public double obtenerMaximoY() {
 
-    public ArrayList<Float> getMuestrasDistancia() { return muestrasDistancia; }
-    public void setMuestrasDistancia(ArrayList<Float> muestrasDistancia) { this.muestrasDistancia = muestrasDistancia; }
+        double max = 1;
 
-    public Carga getCargaOrigen() { return cargaOrigen; }
-    public void setCargaOrigen(Carga cargaOrigen) { this.cargaOrigen = cargaOrigen; }
+        for (DataPoint p : puntos) {
 
-    public Carga getCargaDestino() { return cargaDestino; }
-    public void setCargaDestino(Carga cargaDestino) { this.cargaDestino = cargaDestino; }
+            max
+                    = Math.max(
+                            max,
+                            p.getY()
+                    );
+        }
+
+        return max;
+    }
+
+    public double obtenerMinimoX() {
+
+        if (puntos.isEmpty()) {
+            return 0;
+        }
+
+        double min
+                = puntos.get(0).getX();
+
+        for (DataPoint p : puntos) {
+
+            min
+                    = Math.min(
+                            min,
+                            p.getX()
+                    );
+        }
+
+        return min;
+    }
+
+    public double obtenerMaximoX() {
+
+        if (puntos.isEmpty()) {
+            return 1;
+        }
+
+        double max
+                = puntos.get(0).getX();
+
+        for (DataPoint p : puntos) {
+
+            max
+                    = Math.max(
+                            max,
+                            p.getX()
+                    );
+        }
+
+        return max;
+    }
 }

@@ -2,47 +2,104 @@ package modelo;
 
 public class Grafica {
 
-    private TiposGrafica tipo;
-    private String etiquetaX;
-    private String etiquetaY;
-    private int limiteX;
-    private int limiteY;
+    private String titulo;
+
+    private String descripcion;
+
+    private String unidadX;
+
+    private String unidadY;
+
+    private String conclusion;
+
     private DataSet dataSet;
 
-    public Grafica(TiposGrafica tipo, DataSet dataSet) {
-        this.tipo = tipo;
-        this.dataSet = dataSet;
-        this.limiteX = 0;
-        this.limiteY = 0;
+    public Grafica(
+            String titulo,
+            String descripcion,
+            String unidadX,
+            String unidadY
+    ) {
+
+        this.titulo = titulo;
+
+        this.descripcion = descripcion;
+
+        this.unidadX = unidadX;
+
+        this.unidadY = unidadY;
+
+        this.dataSet = new DataSet();
+
+        this.conclusion = "";
     }
 
-    public void renderizar() {
+    public void generarConclusion() {
+
+        if (dataSet.getPuntos().size() < 2) {
+
+            conclusion
+                    = "No hay suficientes datos.";
+
+            return;
+        }
+
+        double primerValor
+                = dataSet.getPuntos()
+                        .get(0)
+                        .getY();
+
+        double ultimoValor
+                = dataSet.getPuntos()
+                        .get(
+                                dataSet
+                                        .getPuntos()
+                                        .size() - 1
+                        )
+                        .getY();
+
+        if (ultimoValor > primerValor) {
+
+            conclusion
+                    = "La magnitud aumentó "
+                    + "durante la interacción.";
+
+        } else {
+
+            conclusion
+                    = "La magnitud disminuyó "
+                    + "durante la interacción.";
+        }
     }
 
-    public void zoom(float nivel) {
+    public void limpiar() {
+
+        dataSet.limpiar();
+
+        conclusion = "";
     }
 
-    public void exportarImagen() {
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void ajustarLimites() {
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public TiposGrafica getTipo() { return tipo; }
-    public void setTipo(TiposGrafica tipo) { this.tipo = tipo; }
+    public String getUnidadX() {
+        return unidadX;
+    }
 
-    public String getEtiquetaX() { return etiquetaX; }
-    public void setEtiquetaX(String etiquetaX) { this.etiquetaX = etiquetaX; }
+    public String getUnidadY() {
+        return unidadY;
+    }
 
-    public String getEtiquetaY() { return etiquetaY; }
-    public void setEtiquetaY(String etiquetaY) { this.etiquetaY = etiquetaY; }
+    public String getConclusion() {
+        return conclusion;
+    }
 
-    public int getLimiteX() { return limiteX; }
-    public void setLimiteX(int limiteX) { this.limiteX = limiteX; }
-
-    public int getLimiteY() { return limiteY; }
-    public void setLimiteY(int limiteY) { this.limiteY = limiteY; }
-
-    public DataSet getDataSet() { return dataSet; }
-    public void setDataSet(DataSet dataSet) { this.dataSet = dataSet; }
+    public DataSet getDataSet() {
+        return dataSet;
+    }
 }
