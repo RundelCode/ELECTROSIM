@@ -3,69 +3,40 @@ package electrosim_c.Vistas;
 import electrosim_c.Componentes.CargaCard;
 import electrosim_c.Componentes.Header;
 import controlador.FuerzaController;
-import controlador.SistemaController;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import modelo.Carga;
-import modelo.DataPoint;
-import modelo.DataSet;
 import modelo.Fuerza;
-import modelo.Grafica;
-import modelo.Sistema;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Simulador {
 
     private BorderPane root;
-
     private Canvas canvas;
-
     private GridPane listaCargas;
 
-    private SistemaController sistemaController;
+    private List<Carga> cargas = new ArrayList<>();
 
     private FuerzaController fuerzaController;
-
-    private List<Carga> cargas;
 
     private Carga cargaSeleccionada;
 
     private final double RADIO_CARGA = 16;
 
-    private Canvas grafica1;
-    private Canvas grafica2;
-    private Canvas grafica3;
-    private Canvas grafica4;
-
-    private ComboBox<String> selectorInteraccion;
-
     public Simulador(Runnable goBack) {
 
-        Sistema sistema = new Sistema(1);
-
-        sistemaController
-                = new SistemaController(sistema);
-
-        fuerzaController
-                = sistemaController.getFuerzaController();
-
-        cargas
-                = sistema.getCargas();
+        fuerzaController = new FuerzaController();
 
         root = new BorderPane();
-
         root.getStyleClass().add("contenedor");
 
         Header header = new Header(
@@ -76,69 +47,39 @@ public class Simulador {
         root.setTop(header.getView());
 
         canvas = new Canvas();
-
-        canvas.getStyleClass()
-                .add("canvas-simulador");
+        canvas.getStyleClass().add("canvas-simulador");
 
         HBox mainContent = new HBox();
-
-        mainContent.setPadding(
-                new Insets(20)
-        );
+        mainContent.setPadding(new Insets(20));
 
         HBox canvasContainer = new HBox();
-
-        canvasContainer.setAlignment(
-                Pos.CENTER
-        );
+        canvasContainer.setAlignment(Pos.CENTER);
 
         VBox panelDerecho = new VBox();
-
         panelDerecho.setSpacing(15);
+        panelDerecho.getStyleClass().add("panel-lateral");
 
-        panelDerecho.getStyleClass()
-                .add("panel-lateral");
+        Button btnAgregar = new Button("AGREGAR");
+        Button btnLimpiar = new Button("LIMPIAR");
 
-        Button btnAgregar
-                = new Button("AGREGAR");
+        btnAgregar.getStyleClass().add("btn-primary");
+        btnLimpiar.getStyleClass().add("btn-primary");
 
-        Button btnLimpiar
-                = new Button("LIMPIAR");
-
-        btnAgregar.getStyleClass()
-                .add("btn-primary");
-
-        btnLimpiar.getStyleClass()
-                .add("btn-primary");
-
-        HBox acciones
-                = new HBox(
-                        10,
-                        btnAgregar,
-                        btnLimpiar
-                );
+        HBox acciones = new HBox(10, btnAgregar, btnLimpiar);
 
         listaCargas = new GridPane();
-
         listaCargas.setHgap(20);
-
         listaCargas.setVgap(20);
 
-        ColumnConstraints col1
-                = new ColumnConstraints();
-
+        ColumnConstraints col1 = new ColumnConstraints();
         col1.setPercentWidth(50);
 
-        ColumnConstraints col2
-                = new ColumnConstraints();
-
+        ColumnConstraints col2 = new ColumnConstraints();
         col2.setPercentWidth(50);
 
-        listaCargas.getColumnConstraints()
-                .addAll(col1, col2);
+        listaCargas.getColumnConstraints().addAll(col1, col2);
 
-        ScrollPane scroll
-                = new ScrollPane(listaCargas);
+        ScrollPane scroll = new ScrollPane(listaCargas);
 
         scroll.setFitToWidth(true);
 
@@ -147,9 +88,7 @@ public class Simulador {
         );
 
         scroll.setPrefHeight(440);
-
         scroll.setMaxHeight(440);
-
         scroll.setMinHeight(440);
 
         scroll.setStyle(
@@ -163,13 +102,11 @@ public class Simulador {
         );
 
         canvasContainer.prefWidthProperty().bind(
-                mainContent.widthProperty()
-                        .multiply(0.6)
+                mainContent.widthProperty().multiply(0.6)
         );
 
         panelDerecho.prefWidthProperty().bind(
-                mainContent.widthProperty()
-                        .multiply(0.4)
+                mainContent.widthProperty().multiply(0.4)
         );
 
         panelDerecho.setMinWidth(350);
@@ -188,144 +125,18 @@ public class Simulador {
                 (obs, o, n) -> renderAll()
         );
 
-        canvasContainer.getChildren().add(
-                canvas
-        );
+        canvasContainer.getChildren().add(canvas);
 
         mainContent.getChildren().addAll(
                 canvasContainer,
                 panelDerecho
         );
 
-        grafica1 = new Canvas(420, 180);
-        grafica2 = new Canvas(420, 180);
-        grafica3 = new Canvas(420, 180);
-        grafica4 = new Canvas(420, 180);
+        root.setCenter(mainContent);
 
-        GridPane panelGraficas
-                = new GridPane();
+        btnAgregar.setOnAction(e -> agregarCarga());
 
-        panelGraficas.setHgap(25);
-
-        panelGraficas.setVgap(25);
-
-        panelGraficas.setPadding(
-                new Insets(20)
-        );
-
-        panelGraficas.add(
-                crearBloqueGrafica(
-                        sistemaController
-                                .getGraficaFuerza(),
-                        grafica1
-                ),
-                0,
-                0
-        );
-
-        panelGraficas.add(
-                crearBloqueGrafica(
-                        sistemaController
-                                .getGraficaCampo(),
-                        grafica2
-                ),
-                1,
-                0
-        );
-
-        panelGraficas.add(
-                crearBloqueGrafica(
-                        sistemaController
-                                .getGraficaPotencial(),
-                        grafica3
-                ),
-                0,
-                1
-        );
-
-        panelGraficas.add(
-                crearBloqueGrafica(
-                        sistemaController
-                                .getGraficaTrabajo(),
-                        grafica4
-                ),
-                1,
-                1
-        );
-
-        selectorInteraccion
-                = new ComboBox<>();
-
-        selectorInteraccion.setPrefWidth(240);
-
-        actualizarSelectorInteracciones();
-
-        selectorInteraccion.setOnAction(e -> {
-
-            int index
-                    = selectorInteraccion
-                            .getSelectionModel()
-                            .getSelectedIndex();
-
-            if (index >= 0) {
-
-                sistemaController
-                        .seleccionarInteraccion(index);
-
-                renderAll();
-            }
-        });
-
-        Label tituloAnalisis
-                = new Label(
-                        "ANÁLISIS DE INTERACCIONES"
-                );
-
-        tituloAnalisis.setStyle(
-                "-fx-font-size: 24px;"
-                + "-fx-font-weight: bold;"
-                + "-fx-text-fill: #1d2a7a;"
-        );
-
-        HBox topResultados
-                = new HBox(
-                        20,
-                        tituloAnalisis,
-                        selectorInteraccion
-                );
-
-        topResultados.setAlignment(
-                Pos.CENTER_LEFT
-        );
-
-        topResultados.setPadding(
-                new Insets(
-                        0,
-                        20,
-                        0,
-                        20
-                )
-        );
-
-        VBox contenido
-                = new VBox(
-                        18,
-                        mainContent,
-                        topResultados,
-                        panelGraficas
-                );
-
-        contenido.setFillWidth(true);
-
-        root.setCenter(contenido);
-
-        btnAgregar.setOnAction(
-                e -> agregarCarga()
-        );
-
-        btnLimpiar.setOnAction(
-                e -> limpiar()
-        );
+        btnLimpiar.setOnAction(e -> limpiar());
 
         configurarEventosMouse();
 
@@ -397,21 +208,13 @@ public class Simulador {
             float nuevaY
                     = (float) ((centerY - mouseY) / spacingY);
 
-            nuevaX
-                    = Math.max(-9, Math.min(9, nuevaX));
+            nuevaX = Math.max(-9, Math.min(9, nuevaX));
+            nuevaY = Math.max(-9, Math.min(9, nuevaY));
 
-            nuevaY
-                    = Math.max(-9, Math.min(9, nuevaY));
+            cargaSeleccionada.setPosicionX(nuevaX);
+            cargaSeleccionada.setPosicionY(nuevaY);
 
-            cargaSeleccionada.setPosicionX(
-                    nuevaX
-            );
-
-            cargaSeleccionada.setPosicionY(
-                    nuevaY
-            );
-
-            sistemaController.actualizarDatos();
+            fuerzaController.calcularFuerzas(cargas);
 
             renderAll();
         });
@@ -428,25 +231,25 @@ public class Simulador {
             return;
         }
 
-        float x
-                = (float) (Math.random() * 12 - 6);
-
-        float y
-                = (float) (Math.random() * 12 - 6);
+        float x = (float) (Math.random() * 12 - 6);
+        float y = (float) (Math.random() * 12 - 6);
 
         x = Math.max(-8, Math.min(8, x));
-
         y = Math.max(-8, Math.min(8, y));
 
         float magnitud
                 = Math.random() > 0.5 ? 5 : -5;
 
-        sistemaController.agregarCarga(
+        Carga c = new Carga(
                 x,
                 y,
                 magnitud,
                 1
         );
+
+        cargas.add(c);
+
+        fuerzaController.calcularFuerzas(cargas);
 
         renderAll();
     }
@@ -455,9 +258,7 @@ public class Simulador {
 
         cargas.clear();
 
-        sistemaController.limpiarGraficas();
-
-        sistemaController.actualizarDatos();
+        fuerzaController.calcularFuerzas(cargas);
 
         renderAll();
     }
@@ -469,12 +270,7 @@ public class Simulador {
             return;
         }
 
-        actualizarSelectorInteracciones();
-
         render();
-
-        renderGraficas();
-
         renderPanel(cargas);
     }
 
@@ -484,15 +280,12 @@ public class Simulador {
                 = canvas.getGraphicsContext2D();
 
         double w = canvas.getWidth();
-
         double h = canvas.getHeight();
 
         double centerX = w / 2;
-
         double centerY = h / 2;
 
         double spacingX = w / 20;
-
         double spacingY = h / 20;
 
         gc.setFill(Color.web("#07090f"));
@@ -542,278 +335,6 @@ public class Simulador {
         );
     }
 
-    private void renderGraficas() {
-
-        renderGrafica(
-                sistemaController.getGraficaFuerza(),
-                grafica1
-        );
-
-        renderGrafica(
-                sistemaController.getGraficaCampo(),
-                grafica2
-        );
-
-        renderGrafica(
-                sistemaController.getGraficaPotencial(),
-                grafica3
-        );
-
-        renderGrafica(
-                sistemaController.getGraficaTrabajo(),
-                grafica4
-        );
-    }
-
-    private void actualizarSelectorInteracciones() {
-
-        selectorInteraccion
-                .getItems()
-                .clear();
-
-        selectorInteraccion
-                .getItems()
-                .addAll(
-                        sistemaController
-                                .getInteraccionesDisponibles()
-                );
-
-        if (!selectorInteraccion
-                .getItems()
-                .isEmpty()) {
-
-            int indice
-                    = sistemaController
-                            .getIndiceInteraccionSeleccionada();
-
-            indice
-                    = Math.min(
-                            indice,
-                            selectorInteraccion
-                                    .getItems()
-                                    .size() - 1
-                    );
-
-            selectorInteraccion
-                    .getSelectionModel()
-                    .select(indice);
-        }
-    }
-
-    private VBox crearBloqueGrafica(
-            Grafica grafica,
-            Canvas canvasGrafica
-    ) {
-
-        Label titulo
-                = new Label(
-                        grafica.getTitulo()
-                );
-
-        titulo.setStyle(
-                "-fx-font-size: 18px;"
-                + "-fx-font-weight: bold;"
-                + "-fx-text-fill: #1d2a7a;"
-        );
-
-        Label descripcion
-                = new Label(
-                        grafica.getDescripcion()
-                );
-
-        descripcion.setStyle(
-                "-fx-text-fill: #5c6685;"
-        );
-
-        VBox info
-                = new VBox(
-                        6,
-                        titulo,
-                        descripcion
-                );
-
-        StackPane frame
-                = new StackPane(canvasGrafica);
-
-        frame.setPadding(
-                new Insets(10)
-        );
-
-        frame.setStyle(
-                "-fx-background-color: #10131c;"
-                + "-fx-border-color: #2a3248;"
-                + "-fx-border-width: 1px;"
-        );
-
-        VBox box
-                = new VBox(
-                        12,
-                        info,
-                        frame
-                );
-
-        return box;
-    }
-
-    private void renderGrafica(
-            Grafica grafica,
-            Canvas canvasGrafica
-    ) {
-
-        GraphicsContext gc
-                = canvasGrafica
-                        .getGraphicsContext2D();
-
-        double w
-                = canvasGrafica.getWidth();
-
-        double h
-                = canvasGrafica.getHeight();
-
-        gc.setFill(
-                Color.web("#0d111a")
-        );
-
-        gc.fillRect(0, 0, w, h);
-
-        double padding = 40;
-
-        double graphW
-                = w - padding * 2;
-
-        double graphH
-                = h - padding * 2;
-
-        gc.setStroke(
-                Color.web("#20283b")
-        );
-
-        for (int i = 0; i <= 10; i++) {
-
-            double x
-                    = padding
-                    + i * (graphW / 10);
-
-            double y
-                    = padding
-                    + i * (graphH / 10);
-
-            gc.strokeLine(
-                    x,
-                    padding,
-                    x,
-                    h - padding
-            );
-
-            gc.strokeLine(
-                    padding,
-                    y,
-                    w - padding,
-                    y
-            );
-        }
-
-        DataSet dataSet
-                = grafica.getDataSet();
-
-        List<DataPoint> puntos
-                = dataSet.getPuntos();
-
-        if (puntos.size() < 2) {
-
-            gc.setFill(Color.WHITE);
-
-            gc.fillText(
-                    "Mueve cargas para generar datos",
-                    100,
-                    h / 2
-            );
-
-            return;
-        }
-
-        double maxY
-                = dataSet.obtenerMaximoY();
-
-        double minX
-                = dataSet.obtenerMinimoX();
-
-        double maxX
-                = dataSet.obtenerMaximoX();
-
-        double rangeX
-                = Math.max(
-                        0.1,
-                        maxX - minX
-                );
-
-        gc.setStroke(
-                Color.web("#4fc3ff")
-        );
-
-        gc.setLineWidth(2);
-
-        for (int i = 0;
-                i < puntos.size() - 1;
-                i++) {
-
-            DataPoint p1
-                    = puntos.get(i);
-
-            DataPoint p2
-                    = puntos.get(i + 1);
-
-            double x1
-                    = padding
-                    + ((p1.getX() - minX)
-                    / rangeX)
-                    * graphW;
-
-            double y1
-                    = h - padding
-                    - ((p1.getY() / maxY)
-                    * graphH);
-
-            double x2
-                    = padding
-                    + ((p2.getX() - minX)
-                    / rangeX)
-                    * graphW;
-
-            double y2
-                    = h - padding
-                    - ((p2.getY() / maxY)
-                    * graphH);
-
-            gc.strokeLine(
-                    x1,
-                    y1,
-                    x2,
-                    y2
-            );
-        }
-
-        gc.setFill(
-                Color.web("#d7e0ff")
-        );
-
-        gc.fillText(
-                "Área: "
-                + String.format(
-                        "%.2f",
-                        dataSet.calcularAreaBajoCurva()
-                ),
-                12,
-                h - 12
-        );
-
-        gc.fillText(
-                grafica.getConclusion(),
-                12,
-                20
-        );
-    }
-
     private void renderGrid(
             GraphicsContext gc,
             double w,
@@ -831,7 +352,6 @@ public class Simulador {
         for (int i = -10; i <= 10; i++) {
 
             double x = centerX + i * spacingX;
-
             double y = centerY + i * spacingY;
 
             gc.strokeLine(x, 0, x, h);
@@ -869,13 +389,15 @@ public class Simulador {
             float magnitud
                     = Math.abs(c.getCarga());
 
-            Color color
-                    = c.getCarga() > 0
+            Color color = c.getCarga() > 0
                     ? Color.web("#ff4530")
                     : Color.web("#3aa0ff");
 
             int capas
-                    = (int) Math.max(4, magnitud);
+                    = (int) Math.max(
+                            4,
+                            magnitud
+                    );
 
             double radioBase
                     = 28 + magnitud * 3;
@@ -891,8 +413,10 @@ public class Simulador {
                 double alpha
                         = alphaBase - i * 0.002;
 
-                alpha
-                        = Math.max(0.008, alpha);
+                alpha = Math.max(
+                        0.008,
+                        alpha
+                );
 
                 gc.setGlobalAlpha(alpha);
 
@@ -918,15 +442,8 @@ public class Simulador {
             double spacingY
     ) {
 
-        Fuerza seleccionada
-                = sistemaController
-                        .getInteraccionActual();
-
         for (Fuerza fuerza
                 : fuerzaController.getFuerzas()) {
-
-            boolean activa
-                    = fuerza == seleccionada;
 
             Carga origen
                     = fuerza.getCargaOrigen();
@@ -936,23 +453,19 @@ public class Simulador {
 
             double x1
                     = centerX
-                    + origen.getPosicionX()
-                    * spacingX;
+                    + origen.getPosicionX() * spacingX;
 
             double y1
                     = centerY
-                    - origen.getPosicionY()
-                    * spacingY;
+                    - origen.getPosicionY() * spacingY;
 
             double x2
                     = centerX
-                    + destino.getPosicionX()
-                    * spacingX;
+                    + destino.getPosicionX() * spacingX;
 
             double y2
                     = centerY
-                    - destino.getPosicionY()
-                    * spacingY;
+                    - destino.getPosicionY() * spacingY;
 
             Color color
                     = fuerza.esRepulsion()
@@ -961,20 +474,13 @@ public class Simulador {
 
             gc.setStroke(color);
 
-            gc.setGlobalAlpha(
-                    activa ? 1 : 0.10
-            );
+            gc.setGlobalAlpha(0.75);
 
-            gc.setLineWidth(
-                    activa ? 3 : 1
-            );
+            gc.setLineWidth(2);
 
-            gc.strokeLine(
-                    x1,
-                    y1,
-                    x2,
-                    y2
-            );
+            gc.strokeLine(x1, y1, x2, y2);
+
+            gc.setGlobalAlpha(1);
 
             dibujarFlechasInteraccion(
                     gc,
@@ -985,8 +491,6 @@ public class Simulador {
                     fuerza.esRepulsion()
             );
         }
-
-        gc.setGlobalAlpha(1);
     }
 
     private void renderCargas(
@@ -1021,8 +525,7 @@ public class Simulador {
 
             if (c == cargaSeleccionada) {
 
-                glow
-                        = c.getCarga() > 0
+                glow = c.getCarga() > 0
                         ? Color.web("#ffb199")
                         : Color.web("#8ed8ff");
             }
@@ -1079,142 +582,112 @@ public class Simulador {
             double spacingY
     ) {
 
-        Fuerza fuerza
-                = sistemaController
-                        .getInteraccionActual();
+        for (Fuerza fuerza
+                : fuerzaController.getFuerzas()) {
 
-        if (fuerza == null) {
-            return;
+            Carga origen
+                    = fuerza.getCargaOrigen();
+
+            Carga destino
+                    = fuerza.getCargaDestino();
+
+            double x1
+                    = centerX
+                    + origen.getPosicionX() * spacingX;
+
+            double y1
+                    = centerY
+                    - origen.getPosicionY() * spacingY;
+
+            double x2
+                    = centerX
+                    + destino.getPosicionX() * spacingX;
+
+            double y2
+                    = centerY
+                    - destino.getPosicionY() * spacingY;
+
+            double mx = (x1 + x2) / 2;
+            double my = (y1 + y2) / 2;
+
+            double ancho = 78;
+            double alto = 34;
+
+            gc.setGlobalAlpha(0.38);
+
+            gc.setFill(Color.web("#0d111c"));
+
+            gc.fillRoundRect(
+                    mx - ancho / 2,
+                    my - alto / 2,
+                    ancho,
+                    alto,
+                    12,
+                    12
+            );
+
+            gc.setGlobalAlpha(0.55);
+
+            gc.setStroke(Color.web("#7380a8"));
+
+            gc.setLineWidth(1);
+
+            gc.strokeRoundRect(
+                    mx - ancho / 2,
+                    my - alto / 2,
+                    ancho,
+                    alto,
+                    12,
+                    12
+            );
+
+            gc.setGlobalAlpha(1);
+
+            gc.setTextAlign(
+                    javafx.scene.text.TextAlignment.CENTER
+            );
+
+            gc.setFill(Color.WHITE);
+
+            gc.setFont(
+                    javafx.scene.text.Font.font(
+                            "System",
+                            javafx.scene.text.FontWeight.BOLD,
+                            9
+                    )
+            );
+
+            String tipo
+                    = fuerza.esRepulsion()
+                    ? "Repulsión"
+                    : "Atracción";
+
+            gc.fillText(
+                    tipo,
+                    mx,
+                    my - 3
+            );
+
+            gc.setFill(Color.web("#c4cee8"));
+
+            gc.setFont(
+                    javafx.scene.text.Font.font(
+                            "System",
+                            javafx.scene.text.FontWeight.NORMAL,
+                            8
+                    )
+            );
+
+            gc.fillText(
+                    "r = "
+                    + String.format(
+                            "%.2f",
+                            fuerza.getDistancia()
+                    ),
+                    mx,
+                    my + 10
+            );
         }
-
-        Carga origen
-                = fuerza.getCargaOrigen();
-
-        Carga destino
-                = fuerza.getCargaDestino();
-
-        double x1
-                = centerX
-                + origen.getPosicionX()
-                * spacingX;
-
-        double y1
-                = centerY
-                - origen.getPosicionY()
-                * spacingY;
-
-        double x2
-                = centerX
-                + destino.getPosicionX()
-                * spacingX;
-
-        double y2
-                = centerY
-                - destino.getPosicionY()
-                * spacingY;
-
-        double mx = (x1 + x2) / 2;
-
-        double my = (y1 + y2) / 2;
-
-        double ancho = 180;
-
-        double alto = 95;
-
-        gc.setGlobalAlpha(0.85);
-
-        gc.setFill(
-                Color.web("#0d111c")
-        );
-
-        gc.fillRoundRect(
-                mx - ancho / 2,
-                my - alto / 2,
-                ancho,
-                alto,
-                18,
-                18
-        );
-
-        gc.setStroke(
-                Color.web("#5f6b8a")
-        );
-
-        gc.setLineWidth(1.5);
-
-        gc.strokeRoundRect(
-                mx - ancho / 2,
-                my - alto / 2,
-                ancho,
-                alto,
-                18,
-                18
-        );
-
-        gc.setGlobalAlpha(1);
-
-        gc.setFill(Color.WHITE);
-
-        gc.setTextAlign(
-                javafx.scene.text.TextAlignment.CENTER
-        );
-
-        gc.setFont(
-                Font.font(
-                        "System",
-                        FontWeight.BOLD,
-                        13
-                )
-        );
-
-        String tipo
-                = fuerza.esRepulsion()
-                ? "REPULSIÓN"
-                : "ATRACCIÓN";
-
-        gc.fillText(
-                tipo,
-                mx,
-                my - 24
-        );
-
-        gc.setFont(
-                Font.font(
-                        "System",
-                        11
-                )
-        );
-
-        gc.fillText(
-                "Distancia: "
-                + String.format(
-                        "%.2f",
-                        fuerza.getDistancia()
-                )
-                + " m",
-                mx,
-                my + 2
-        );
-
-        gc.fillText(
-                "Fuerza: "
-                + String.format(
-                        "%.2f",
-                        Math.abs(
-                                fuerza.getMagnitud()
-                        )
-                )
-                + " N",
-                mx,
-                my + 24
-        );
-
-        gc.fillText(
-                sistemaController
-                        .getNombreInteraccionActual(),
-                mx,
-                my + 48
-        );
     }
 
     private void dibujarFlechasInteraccion(
@@ -1227,14 +700,11 @@ public class Simulador {
     ) {
 
         double dx = x2 - x1;
-
         double dy = y2 - y1;
 
-        double angle
-                = Math.atan2(dy, dx);
+        double angle = Math.atan2(dy, dx);
 
         double mx = (x1 + x2) / 2;
-
         double my = (y1 + y2) / 2;
 
         double offset = 32;
@@ -1276,10 +746,7 @@ public class Simulador {
         gc.strokeLine(x1, y1, x2, y2);
 
         double angle
-                = Math.atan2(
-                        y2 - y1,
-                        x2 - x1
-                );
+                = Math.atan2(y2 - y1, x2 - x1);
 
         double size = 8;
 
@@ -1313,25 +780,21 @@ public class Simulador {
             Carga c = cargas.get(i);
 
             int col = i % 2;
-
             int row = i / 2;
 
             CargaCard cardComponent
                     = new CargaCard(
                             c,
                             () -> {
-
                                 cargas.remove(c);
 
-                                sistemaController
-                                        .actualizarDatos();
+                                fuerzaController.calcularFuerzas(cargas);
 
                                 renderAll();
                             },
                             () -> {
 
-                                sistemaController
-                                        .actualizarDatos();
+                                fuerzaController.calcularFuerzas(cargas);
 
                                 renderAll();
                             }
@@ -1354,7 +817,6 @@ public class Simulador {
     }
 
     public BorderPane getView() {
-
         return root;
     }
 }
