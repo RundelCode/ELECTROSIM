@@ -31,117 +31,103 @@ public class RegistroView {
             Runnable goBack
     ) {
 
-        root
-                = new VBox(
-                        20
-                );
+        // Construimos el contenedor principal de la vista de detalle.
+        root = new VBox(20);
 
         root.getStyleClass().add(
                 "contenedor"
         );
 
         root.setPadding(
-                new Insets(
-                        30
+                new Insets(30)
+        );
+
+        // Reconstruimos la ubicación física donde fue almacenada la simulación.
+        carpetaRegistro = construirRuta(
+                registro
+        );
+
+        // Agregamos navegación para volver al listado de registros.
+        Header header = new Header(
+                "Registro",
+                goBack
+        );
+
+        // Mostramos la información principal del experimento.
+        Label usuario = crearTitulo(
+                registro.getUsuario()
+        );
+
+        Label fecha = crearSubtitulo(
+                registro.getFechaTexto()
+        );
+
+        // Recuperamos el resultado global más importante del sistema.
+        Label fuerzaTitulo = crearSeccion(
+                "Fuerza neta del sistema"
+        );
+
+        Label fuerza = crearTexto(
+                leerArchivo(
+                        "metadata.txt",
+                        3
                 )
         );
 
-        carpetaRegistro
-                = construirRuta(
-                        registro
-                );
-
-        Header header
-                = new Header(
-                        "Registro",
-                        goBack
-                );
-
-        Label usuario
-                = crearTitulo(
-                        registro.getUsuario()
-                );
-
-        Label fecha
-                = crearSubtitulo(
-                        registro.getFechaTexto()
-                );
-        Label fuerzaTitulo
-                = crearSeccion(
-                        "Fuerza neta del sistema"
-                );
-
-        Label fuerza
-                = crearTexto(
-                        leerArchivo(
-                                "metadata.txt",
-                                3
-                        )
-                );
-
-        Label titulo
-                = crearSeccion(
-                        "Experimento"
-                );
-
-        Label tituloValor
-                = crearTexto(
-                        leerArchivo(
-                                "metadata.txt",
-                                1
-                        )
-                );
-
-        Label notasTitulo
-                = crearSeccion(
-                        "Observaciones"
-                );
-
-        Label notas
-                = crearTexto(
-                        leerCompleto(
-                                "notas.txt"
-                        )
-                );
-
-        Label cargasTitulo
-                = crearSeccion(
-                        "Configuración de cargas"
-                );
-
-        Label cargas
-                = crearTexto(
-                        leerCompleto(
-                                "cargas.txt"
-                        )
-                );
-
-        Label simulacionTitulo
-                = crearSeccion(
-                        "Simulación"
-                );
-
-        ImageView canvas
-                = cargarImagen(
-                        "canvas.png",
-                        500
-                );
-
-        Label resultadosTitulo
-                = crearSeccion(
-                        "Resultados"
-                );
-
-        FlowPane resultados
-                = new FlowPane();
-
-        resultados.setHgap(
-                20
+        // Mostramos la información general del experimento.
+        Label titulo = crearSeccion(
+                "Experimento"
         );
 
-        resultados.setVgap(
-                20
+        Label tituloValor = crearTexto(
+                leerArchivo(
+                        "metadata.txt",
+                        1
+                )
         );
+
+        // Recuperamos las observaciones registradas por el usuario.
+        Label notasTitulo = crearSeccion(
+                "Observaciones"
+        );
+
+        Label notas = crearTexto(
+                leerCompleto(
+                        "notas.txt"
+                )
+        );
+
+        // Cargamos la configuración exacta usada en la simulación.
+        Label cargasTitulo = crearSeccion(
+                "Configuración de cargas"
+        );
+
+        Label cargas = crearTexto(
+                leerCompleto(
+                        "cargas.txt"
+                )
+        );
+
+        // Mostramos la captura principal del experimento.
+        Label simulacionTitulo = crearSeccion(
+                "Simulación"
+        );
+
+        ImageView canvas = cargarImagen(
+                "canvas.png",
+                500
+        );
+
+        // Agrupamos todas las gráficas generadas durante el análisis.
+        Label resultadosTitulo = crearSeccion(
+                "Resultados"
+        );
+
+        FlowPane resultados = new FlowPane();
+
+        resultados.setHgap(20);
+
+        resultados.setVgap(20);
 
         agregarGrafica(
                 resultados,
@@ -163,6 +149,7 @@ public class RegistroView {
                 "trabajo.png"
         );
 
+        // Ensamblamos toda la información para reconstruir el experimento.
         root.getChildren().addAll(
                 header.getView(),
                 usuario,
@@ -186,14 +173,15 @@ public class RegistroView {
             Registro registro
     ) {
 
-        String fecha
-                = registro.getFecha()
-                        .format(
-                                DateTimeFormatter.ofPattern(
-                                        "yyyy-MM-dd"
-                                )
-                        );
+        // Convertimos la fecha al formato usado por la bitácora.
+        String fecha = registro.getFecha()
+                .format(
+                        DateTimeFormatter.ofPattern(
+                                "yyyy-MM-dd"
+                        )
+                );
 
+        // Reconstruimos la ruta exacta donde vive este registro.
         return new File(
                 "bitacoras/"
                 + fecha
@@ -209,11 +197,11 @@ public class RegistroView {
             String nombre
     ) {
 
-        ImageView img
-                = cargarImagen(
-                        nombre,
-                        280
-                );
+        // Solo agregamos la gráfica si fue exportada correctamente.
+        ImageView img = cargarImagen(
+                nombre,
+                280
+        );
 
         if (img != null) {
 
@@ -228,25 +216,27 @@ public class RegistroView {
             double width
     ) {
 
-        File archivo
-                = new File(
-                        carpetaRegistro,
-                        nombre
-                );
+        // Buscamos la imagen dentro del directorio del experimento.
+        File archivo = new File(
+                carpetaRegistro,
+                nombre
+        );
 
+        // Evitamos errores si el recurso no existe.
         if (!archivo.exists()) {
             return null;
         }
 
-        ImageView view
-                = new ImageView(
-                        new Image(
-                                archivo
-                                        .toURI()
-                                        .toString()
-                        )
-                );
+        // Convertimos la imagen almacenada en un componente visual.
+        ImageView view = new ImageView(
+                new Image(
+                        archivo
+                                .toURI()
+                                .toString()
+                )
+        );
 
+        // Ajustamos el tamaño sin deformar la imagen original.
         view.setPreserveRatio(
                 true
         );
@@ -263,6 +253,7 @@ public class RegistroView {
             int lineaObjetivo
     ) {
 
+        // Extraemos una línea puntual de archivos estructurados.
         try {
 
             BufferedReader reader
@@ -302,6 +293,7 @@ public class RegistroView {
             String archivo
     ) {
 
+        // Recuperamos archivos completos cuando el contenido es descriptivo.
         try {
 
             BufferedReader reader
@@ -344,10 +336,10 @@ public class RegistroView {
             String text
     ) {
 
-        Label l
-                = new Label(
-                        text
-                );
+        // Unificamos la apariencia de los títulos principales.
+        Label l = new Label(
+                text
+        );
 
         l.getStyleClass().add(
                 "titulo"
@@ -360,10 +352,10 @@ public class RegistroView {
             String text
     ) {
 
-        Label l
-                = new Label(
-                        text
-                );
+        // Usamos subtítulos para información contextual secundaria.
+        Label l = new Label(
+                text
+        );
 
         l.getStyleClass().add(
                 "subtitulo"
@@ -376,10 +368,10 @@ public class RegistroView {
             String text
     ) {
 
-        Label l
-                = new Label(
-                        text
-                );
+        // Marcamos visualmente cada bloque informativo del registro.
+        Label l = new Label(
+                text
+        );
 
         l.getStyleClass().add(
                 "theory-section"
@@ -392,10 +384,10 @@ public class RegistroView {
             String text
     ) {
 
-        Label l
-                = new Label(
-                        text
-                );
+        // Aplicamos un formato uniforme para textos largos.
+        Label l = new Label(
+                text
+        );
 
         l.setWrapText(
                 true
@@ -408,6 +400,7 @@ public class RegistroView {
         return l;
     }
 
+    // Exponemos la raíz visual para integrarla al flujo principal.
     public VBox getView() {
 
         return root;

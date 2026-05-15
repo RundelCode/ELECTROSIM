@@ -16,29 +16,31 @@ public class Teoria {
             Runnable goBack
     ) {
 
-        root
-                = new BorderPane();
+        // Construimos el contenedor principal de la vista teórica.
+        root = new BorderPane();
 
         root.getStyleClass().add(
                 "contenedor"
         );
 
-        Header header
-                = new Header(
-                        "Fundamentos teóricos",
-                        goBack
-                );
+        // Agregamos navegación para regresar al flujo principal.
+        Header header = new Header(
+                "Fundamentos teóricos",
+                goBack
+        );
 
-        TheoryParser parser
-                = new TheoryParser();
+        // Delegamos la interpretación del contenido a un parser especializado.
+        TheoryParser parser = new TheoryParser();
 
-        VBox contenido
-                = parser.parse();
+        // Generamos dinámicamente la interfaz a partir del archivo teórico.
+        VBox contenido = parser.parse();
 
+        // Definimos separación visual entre bloques de contenido.
         contenido.setSpacing(
                 20
         );
 
+        // Agregamos márgenes para mejorar la lectura del material.
         contenido.setPadding(
                 new Insets(
                         30,
@@ -48,19 +50,23 @@ public class Teoria {
                 )
         );
 
+        // Permitimos que cada bloque aproveche el ancho disponible.
         contenido.setFillWidth(
                 true
         );
 
+        // Ubicamos el encabezado en la parte superior de la vista.
         root.setTop(
                 header.getView()
         );
 
+        // Mostramos el contenido teórico en la zona principal.
         root.setCenter(
                 contenido
         );
     }
 
+    // Exponemos la vista para integrarla dentro de la aplicación.
     public BorderPane getView() {
 
         return root;

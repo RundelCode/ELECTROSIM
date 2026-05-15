@@ -22,10 +22,8 @@ public class Inicio {
             Runnable goToTeoria
     ) {
 
-        root
-                = new VBox(
-                        15
-                );
+        // Construimos el contenedor principal del menú inicial.
+        root = new VBox(15);
 
         root.setAlignment(
                 Pos.TOP_CENTER
@@ -35,13 +33,12 @@ public class Inicio {
                 "contenedor"
         );
 
-        ImageView logo
-                = crearLogo();
+        // Cargamos los elementos visuales que representan la identidad de la aplicación.
+        ImageView logo = crearLogo();
 
-        Label titulo
-                = new Label(
-                        "ELECTROSIM"
-                );
+        Label titulo = new Label(
+                "ELECTROSIM"
+        );
 
         titulo.getStyleClass().add(
                 "titulo"
@@ -51,10 +48,10 @@ public class Inicio {
                 "-fx-font-size: 40px;"
         );
 
-        Label descripcion
-                = new Label(
-                        "Simulador interactivo de la Ley de Coulomb para visualizar y analizar fuerzas eléctricas entre cargas."
-                );
+        // Presentamos una descripción breve para contextualizar al usuario.
+        Label descripcion = new Label(
+                "Simulador interactivo de la Ley de Coulomb para visualizar y analizar fuerzas eléctricas entre cargas."
+        );
 
         descripcion.getStyleClass().add(
                 "texto"
@@ -64,26 +61,24 @@ public class Inicio {
                 true
         );
 
-        Button opcion1
-                = new Button(
-                        "NUEVA SIMULACIÓN"
-                );
+        // Cada opción representa uno de los módulos principales del sistema.
+        Button opcion1 = new Button(
+                "NUEVA SIMULACIÓN"
+        );
 
-        Button opcion2
-                = new Button(
-                        "REGISTROS"
-                );
+        Button opcion2 = new Button(
+                "REGISTROS"
+        );
 
-        Button opcion3
-                = new Button(
-                        "FUNDAMENTOS TEORICOS"
-                );
+        Button opcion3 = new Button(
+                "FUNDAMENTOS TEORICOS"
+        );
 
-        Button opcion4
-                = new Button(
-                        "SALIR"
-                );
+        Button opcion4 = new Button(
+                "SALIR"
+        );
 
+        // Delegamos la navegación al controlador principal de la aplicación.
         opcion1.setOnAction(
                 e -> goToSimulador.run()
         );
@@ -96,12 +91,12 @@ public class Inicio {
                 e -> goToTeoria.run()
         );
 
+        // Cerramos completamente la aplicación cuando el usuario lo solicita.
         opcion4.setOnAction(
-                e -> System.exit(
-                        0
-                )
+                e -> System.exit(0)
         );
 
+        // Unificamos el ancho de los botones para mantener equilibrio visual.
         for (Button btn
                 : new Button[]{
                     opcion1,
@@ -112,12 +107,11 @@ public class Inicio {
 
             btn.prefWidthProperty().bind(
                     root.widthProperty()
-                            .multiply(
-                                    0.7
-                            )
+                            .multiply(0.7)
             );
         }
 
+        // Ensamblamos todos los componentes que forman la pantalla inicial.
         root.getChildren().addAll(
                 logo,
                 titulo,
@@ -131,14 +125,14 @@ public class Inicio {
 
     private ImageView crearLogo() {
 
-        URL logoUrl
-                = getClass().getResource(
-                        "/electrosim_c/Recursos/Logo.png"
-                );
+        // Buscamos el recurso local para evitar rutas dependientes del entorno.
+        URL logoUrl = getClass().getResource(
+                "/electrosim_c/Recursos/Logo.png"
+        );
 
-        ImageView logo
-                = new ImageView();
+        ImageView logo = new ImageView();
 
+        // Solo cargamos la imagen si el recurso fue encontrado correctamente.
         if (logoUrl != null) {
 
             logo.setImage(
@@ -148,6 +142,7 @@ public class Inicio {
             );
         }
 
+        // Ajustamos el logo manteniendo sus proporciones originales.
         logo.setPreserveRatio(
                 true
         );
@@ -159,6 +154,7 @@ public class Inicio {
         return logo;
     }
 
+    // Expone la vista para integrarla dentro del flujo principal.
     public VBox getView() {
 
         return root;

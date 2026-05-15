@@ -20,7 +20,6 @@ import javafx.scene.layout.*;
 import modelo.Carga;
 import controlador.RegistroController;
 import modelo.Registro;
-import java.util.ArrayList;
 import modelo.Fuerza;
 
 import java.util.ArrayList;
@@ -53,33 +52,35 @@ public class Simulador {
             Runnable goBack
     ) {
 
-        cargas
-                = new ArrayList<>();
+        // Inicializamos el estado base que utilizará toda la simulación.
+        cargas = new ArrayList<>();
 
-        fuerzaController
-                = new FuerzaController();
+        // Preparamos los controladores que gestionan física y persistencia.
+        fuerzaController = new FuerzaController();
 
-        registroController
-                = new RegistroController();
+        registroController = new RegistroController();
 
-        planoRenderer
-                = new PlanoRenderer();
+        // Preparamos los renderizadores encargados de toda la parte visual.
+        planoRenderer = new PlanoRenderer();
 
-        cargaRenderer
-                = new CargaRenderer(
-                        RADIO_CARGA
-                );
+        cargaRenderer = new CargaRenderer(
+                RADIO_CARGA
+        );
 
-        fuerzaRenderer
-                = new FuerzaRenderer();
+        fuerzaRenderer = new FuerzaRenderer();
 
+        // Construimos la interfaz principal del simulador.
         construirVista(
                 goBack
         );
 
+        // Activamos interacción directa sobre el canvas.
         configurarEventos();
+
+        // Preparamos la lógica de exportación de simulaciones.
         configurarBitacora();
 
+        // Esperamos a que JavaFX calcule tamaños reales antes del primer render.
         Platform.runLater(
                 this::renderAll
         );
@@ -89,27 +90,27 @@ public class Simulador {
             Runnable goBack
     ) {
 
-        root
-                = new BorderPane();
+        // Construimos el contenedor principal del dashboard.
+        root = new BorderPane();
 
         root.getStyleClass().add(
                 "contenedor"
         );
 
-        Header header
-                = new Header(
-                        "Agrega las cargas al simulador, define su posición en el espacio y ajusta su magnitud según el caso que desees analizar;"
-                        + " observa cómo cambian las fuerzas eléctricas entre ellas en tiempo real según la Ley de Coulomb. Para una mejor"
-                        + " comprensión de los resultados, se recomienda revisar la fundamentación teórica disponible en la aplicación.",
-                        goBack
-                );
+        // Mostramos una guía rápida para orientar al usuario.
+        Header header = new Header(
+                "Agrega las cargas al simulador, define su posición en el espacio y ajusta su magnitud según el caso que desees analizar;"
+                + " observa cómo cambian las fuerzas eléctricas entre ellas en tiempo real según la Ley de Coulomb. Para una mejor"
+                + " comprensión de los resultados, se recomienda revisar la fundamentación teórica disponible en la aplicación.",
+                goBack
+        );
 
         root.setTop(
                 header.getView()
         );
 
-        canvas
-                = new Canvas();
+        // El canvas será el núcleo visual de la simulación.
+        canvas = new Canvas();
 
         canvas.getStyleClass().add(
                 "canvas-simulador"
@@ -119,8 +120,8 @@ public class Simulador {
                 530
         );
 
-        listaCargas
-                = new GridPane();
+        // Aquí mostraremos las tarjetas de configuración de cada carga.
+        listaCargas = new GridPane();
 
         listaCargas.setHgap(
                 20
@@ -130,11 +131,10 @@ public class Simulador {
                 20
         );
 
-        ColumnConstraints col1
-                = new ColumnConstraints();
+        // Dividimos el panel lateral en dos columnas equilibradas.
+        ColumnConstraints col1 = new ColumnConstraints();
 
-        ColumnConstraints col2
-                = new ColumnConstraints();
+        ColumnConstraints col2 = new ColumnConstraints();
 
         col1.setPercentWidth(
                 50
@@ -149,10 +149,10 @@ public class Simulador {
                 col2
         );
 
-        ScrollPane scroll
-                = new ScrollPane(
-                        listaCargas
-                );
+        // Permitimos navegar cómodamente cuando existan muchas cargas.
+        ScrollPane scroll = new ScrollPane(
+                listaCargas
+        );
 
         scroll.setFitToWidth(
                 true
@@ -167,15 +167,14 @@ public class Simulador {
                 + "-fx-border-color: transparent;"
         );
 
-        Button btnAgregar
-                = new Button(
-                        "AGREGAR"
-                );
+        // Acciones principales del panel de simulación.
+        Button btnAgregar = new Button(
+                "AGREGAR"
+        );
 
-        Button btnLimpiar
-                = new Button(
-                        "LIMPIAR"
-                );
+        Button btnLimpiar = new Button(
+                "LIMPIAR"
+        );
 
         btnAgregar.getStyleClass().add(
                 "btn-primary"
@@ -185,13 +184,13 @@ public class Simulador {
                 "btn-primary"
         );
 
-        HBox acciones
-                = new HBox(
-                        12,
-                        btnAgregar,
-                        btnLimpiar
-                );
+        HBox acciones = new HBox(
+                12,
+                btnAgregar,
+                btnLimpiar
+        );
 
+        // Ambos botones comparten el espacio disponible.
         btnAgregar.setMaxWidth(
                 Double.MAX_VALUE
         );
@@ -220,32 +219,28 @@ public class Simulador {
                         .multiply(0.48)
         );
 
-        VBox panelCargas
-                = new VBox(
-                        15,
-                        acciones,
-                        scroll
-                );
+        VBox panelCargas = new VBox(
+                15,
+                acciones,
+                scroll
+        );
 
         panelCargas.getStyleClass().add(
                 "panel-lateral"
         );
 
-        graficaPanel
-                = new GraficaPanel();
+        // Inicializamos los módulos complementarios de análisis.
+        graficaPanel = new GraficaPanel();
 
-        resultadoPanel
-                = new ResultadoPanel();
+        resultadoPanel = new ResultadoPanel();
 
-        bitacoraPanel
-                = new BitacoraPanel();
+        bitacoraPanel = new BitacoraPanel();
 
-        VBox panelDerechoInferior
-                = new VBox(
-                        15,
-                        resultadoPanel,
-                        bitacoraPanel
-                );
+        VBox panelDerechoInferior = new VBox(
+                15,
+                resultadoPanel,
+                bitacoraPanel
+        );
 
         VBox.setVgrow(
                 resultadoPanel,
@@ -267,26 +262,24 @@ public class Simulador {
                         .multiply(0.55)
         );
 
-        HBox filaSuperior
-                = new HBox(
-                        20,
-                        canvas,
-                        panelCargas
-                );
+        // Distribuimos la aplicación en dos niveles principales.
+        HBox filaSuperior = new HBox(
+                20,
+                canvas,
+                panelCargas
+        );
 
-        HBox filaInferior
-                = new HBox(
-                        20,
-                        graficaPanel,
-                        panelDerechoInferior
-                );
+        HBox filaInferior = new HBox(
+                20,
+                graficaPanel,
+                panelDerechoInferior
+        );
 
-        VBox dashboard
-                = new VBox(
-                        20,
-                        filaSuperior,
-                        filaInferior
-                );
+        VBox dashboard = new VBox(
+                20,
+                filaSuperior,
+                filaInferior
+        );
 
         dashboard.setPadding(
                 new Insets(
@@ -294,6 +287,7 @@ public class Simulador {
                 )
         );
 
+        // Ajustamos automáticamente cada panel al espacio disponible.
         HBox.setHgrow(
                 canvas,
                 Priority.ALWAYS
@@ -338,6 +332,7 @@ public class Simulador {
                 dashboard
         );
 
+        // Conectamos las acciones del usuario con la lógica del sistema.
         btnAgregar.setOnAction(
                 e -> agregarCarga()
         );
@@ -349,45 +344,42 @@ public class Simulador {
 
     private void configurarEventos() {
 
-        interactionHandler
-                = new CanvasInteractionHandler(
-                        canvas,
-                        cargas,
-                        fuerzaController,
-                        RADIO_CARGA
-                );
+        // Delegamos toda la interacción del canvas a un manejador especializado.
+        interactionHandler = new CanvasInteractionHandler(
+                canvas,
+                cargas,
+                fuerzaController,
+                RADIO_CARGA
+        );
 
         interactionHandler.configurar(
                 this::renderAll
         );
 
+        // Redibujamos automáticamente cuando cambia el tamaño del canvas.
         canvas.widthProperty().addListener(
-                (obs, o, n)
-                -> renderAll()
+                (obs, o, n) -> renderAll()
         );
 
         canvas.heightProperty().addListener(
-                (obs, o, n)
-                -> renderAll()
+                (obs, o, n) -> renderAll()
         );
     }
 
     private void agregarCarga() {
 
+        // Limitamos la cantidad para mantener claridad visual.
         if (cargas.size() >= 4) {
             return;
         }
 
-        float x
-                = (float) (Math.random() * 12 - 6);
+        // Generamos una posición inicial aleatoria dentro del plano.
+        float x = (float) (Math.random() * 12 - 6);
 
-        float y
-                = (float) (Math.random() * 12 - 6);
+        float y = (float) (Math.random() * 12 - 6);
 
-        float magnitud
-                = Math.random() > 0.5
-                ? 5
-                : -5;
+        // Alternamos signos para generar escenarios variados.
+        float magnitud = Math.random() > 0.5 ? 5 : -5;
 
         cargas.add(
                 new Carga(
@@ -398,6 +390,7 @@ public class Simulador {
                 )
         );
 
+        // Recalculamos la física después de incorporar una nueva partícula.
         fuerzaController.calcularFuerzas(
                 cargas
         );
@@ -407,6 +400,7 @@ public class Simulador {
 
     private void limpiar() {
 
+        // Reiniciamos completamente el experimento actual.
         cargas.clear();
 
         fuerzaController.calcularFuerzas(
@@ -418,11 +412,13 @@ public class Simulador {
 
     private void renderAll() {
 
+        // Evitamos renderizados antes de tener dimensiones válidas.
         if (canvas.getWidth() <= 0
                 || canvas.getHeight() <= 0) {
             return;
         }
 
+        // Sincronizamos canvas, paneles y gráficas con el estado actual.
         render();
 
         renderPanel();
@@ -438,27 +434,22 @@ public class Simulador {
 
     private void render() {
 
-        GraphicsContext gc
-                = canvas.getGraphicsContext2D();
+        // Calculamos la geometría base usada por todos los renderizadores.
+        GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        double width
-                = canvas.getWidth();
+        double width = canvas.getWidth();
 
-        double height
-                = canvas.getHeight();
+        double height = canvas.getHeight();
 
-        double centerX
-                = width / 2;
+        double centerX = width / 2;
 
-        double centerY
-                = height / 2;
+        double centerY = height / 2;
 
-        double spacingX
-                = width / 20;
+        double spacingX = width / 20;
 
-        double spacingY
-                = height / 20;
+        double spacingY = height / 20;
 
+        // Dibujamos el plano cartesiano como referencia visual.
         planoRenderer.render(
                 gc,
                 width,
@@ -469,6 +460,7 @@ public class Simulador {
                 spacingY
         );
 
+        // Representamos el campo eléctrico generado por las cargas.
         cargaRenderer.renderCampoElectrico(
                 gc,
                 cargas,
@@ -478,6 +470,7 @@ public class Simulador {
                 spacingY
         );
 
+        // Dibujamos las interacciones físicas entre partículas.
         fuerzaRenderer.renderInteracciones(
                 gc,
                 fuerzaController.getFuerzas(),
@@ -487,6 +480,7 @@ public class Simulador {
                 spacingY
         );
 
+        // Renderizamos las partículas sobre el plano.
         cargaRenderer.renderCargas(
                 gc,
                 cargas,
@@ -497,6 +491,7 @@ public class Simulador {
                 spacingY
         );
 
+        // Mostramos etiquetas con métricas físicas relevantes.
         fuerzaRenderer.renderEtiquetas(
                 gc,
                 fuerzaController.getFuerzas(),
@@ -509,40 +504,38 @@ public class Simulador {
 
     private void renderPanel() {
 
+        // Reconstruimos el panel lateral según el estado actual.
         listaCargas.getChildren().clear();
 
-        for (int i = 0;
-                i < cargas.size();
-                i++) {
+        for (int i = 0; i < cargas.size(); i++) {
 
-            Carga carga
-                    = cargas.get(i);
+            Carga carga = cargas.get(i);
 
-            CargaCard card
-                    = new CargaCard(
-                            i,
-                            carga,
-                            () -> {
+            // Cada tarjeta permite editar o eliminar una carga.
+            CargaCard card = new CargaCard(
+                    i,
+                    carga,
+                    () -> {
 
-                                cargas.remove(
-                                        carga
-                                );
+                        cargas.remove(
+                                carga
+                        );
 
-                                fuerzaController.calcularFuerzas(
-                                        cargas
-                                );
+                        fuerzaController.calcularFuerzas(
+                                cargas
+                        );
 
-                                renderAll();
-                            },
-                            () -> {
+                        renderAll();
+                    },
+                    () -> {
 
-                                fuerzaController.calcularFuerzas(
-                                        cargas
-                                );
+                        fuerzaController.calcularFuerzas(
+                                cargas
+                        );
 
-                                renderAll();
-                            }
-                    );
+                        renderAll();
+                    }
+            );
 
             listaCargas.add(
                     card.getView(),
@@ -559,11 +552,11 @@ public class Simulador {
 
     private void configurarBitacora() {
 
+        // Asociamos la exportación completa del experimento.
         bitacoraPanel.getGuardarButton().setOnAction(
                 e -> {
 
-                    String usuario
-                    = bitacoraPanel
+                    String usuario = bitacoraPanel
                             .getNombreField()
                             .getText()
                             .trim();
@@ -572,63 +565,54 @@ public class Simulador {
                         return;
                     }
 
-                    String titulo
-                    = bitacoraPanel
+                    String titulo = bitacoraPanel
                             .getTituloField()
                             .getText()
                             .trim();
 
-                    String descripcion
-                    = bitacoraPanel
+                    String descripcion = bitacoraPanel
                             .getNotasArea()
                             .getText()
                             .trim();
 
-                    Registro registro
-                    = new Registro(
+                    // Construimos el registro base antes de persistirlo.
+                    Registro registro = new Registro(
                             usuario,
                             titulo,
                             descripcion,
                             new ArrayList<>()
                     );
 
-                    /*
-                 * CÁLCULO REAL DE FUERZA NETA DEL SISTEMA
-                     */
+                    // Calculamos la fuerza neta total del sistema.
                     double fuerzaNetaSistema = 0;
 
-                    for (int i = 0;
-                    i < cargas.size();
-                    i++) {
+                    for (int i = 0; i < cargas.size(); i++) {
 
-                        Carga origen
-                        = cargas.get(
+                        Carga origen = cargas.get(
                                 i
                         );
 
                         double fx = 0;
                         double fy = 0;
 
-                        for (int j = 0;
-                        j < cargas.size();
-                        j++) {
+                        // Sumamos vectorialmente las interacciones de cada carga.
+                        for (int j = 0; j < cargas.size(); j++) {
 
                             if (i == j) {
                                 continue;
                             }
 
-                            Carga destino
-                            = cargas.get(
+                            Carga destino = cargas.get(
                                     j
                             );
 
-                            Fuerza fuerza
-                            = new Fuerza(
+                            Fuerza fuerza = new Fuerza(
                                     origen,
                                     destino
                             );
 
                             fx += fuerza.getFuerzaX();
+
                             fy += fuerza.getFuerzaY();
                         }
 
@@ -638,9 +622,7 @@ public class Simulador {
                         );
                     }
 
-                    /*
-                 * GUARDAR
-                     */
+                    // Guardamos datos, imágenes y resultados del experimento.
                     registroController.guardarSimulacion(
                             registro,
                             cargas,
@@ -652,11 +634,8 @@ public class Simulador {
                             fuerzaNetaSistema
                     );
 
-                    /*
-                 * FEEDBACK VISUAL
-                     */
-                    Button boton
-                    = bitacoraPanel.getGuardarButton();
+                    // Confirmamos visualmente que el proceso terminó correctamente.
+                    Button boton = bitacoraPanel.getGuardarButton();
 
                     boton.setText(
                             "✓ SIMULACIÓN GUARDADA"
@@ -677,6 +656,7 @@ public class Simulador {
                             )
                     );
 
+                    // Restauramos el botón para futuros guardados.
                     pausa.setOnFinished(
                             event -> {
 
