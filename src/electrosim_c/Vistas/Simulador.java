@@ -21,6 +21,7 @@ import modelo.Carga;
 import controlador.RegistroController;
 import modelo.Registro;
 import java.util.ArrayList;
+import modelo.Fuerza;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,8 +99,8 @@ public class Simulador {
         Header header
                 = new Header(
                         "Agrega las cargas al simulador, define su posición en el espacio y ajusta su magnitud según el caso que desees analizar;"
-                                + " observa cómo cambian las fuerzas eléctricas entre ellas en tiempo real según la Ley de Coulomb. Para una mejor"
-                                + " comprensión de los resultados, se recomienda revisar la fundamentación teórica disponible en la aplicación.",
+                        + " observa cómo cambian las fuerzas eléctricas entre ellas en tiempo real según la Ley de Coulomb. Para una mejor"
+                        + " comprensión de los resultados, se recomienda revisar la fundamentación teórica disponible en la aplicación.",
                         goBack
                 );
 
@@ -591,6 +592,55 @@ public class Simulador {
                             new ArrayList<>()
                     );
 
+                    /*
+                 * CÁLCULO REAL DE FUERZA NETA DEL SISTEMA
+                     */
+                    double fuerzaNetaSistema = 0;
+
+                    for (int i = 0;
+                    i < cargas.size();
+                    i++) {
+
+                        Carga origen
+                        = cargas.get(
+                                i
+                        );
+
+                        double fx = 0;
+                        double fy = 0;
+
+                        for (int j = 0;
+                        j < cargas.size();
+                        j++) {
+
+                            if (i == j) {
+                                continue;
+                            }
+
+                            Carga destino
+                            = cargas.get(
+                                    j
+                            );
+
+                            Fuerza fuerza
+                            = new Fuerza(
+                                    origen,
+                                    destino
+                            );
+
+                            fx += fuerza.getFuerzaX();
+                            fy += fuerza.getFuerzaY();
+                        }
+
+                        fuerzaNetaSistema += Math.sqrt(
+                                (fx * fx)
+                                + (fy * fy)
+                        );
+                    }
+
+                    /*
+                 * GUARDAR
+                     */
                     registroController.guardarSimulacion(
                             registro,
                             cargas,
@@ -598,9 +648,13 @@ public class Simulador {
                             graficaPanel.getCampoChart(),
                             graficaPanel.getPotencialChart(),
                             graficaPanel.getFuerzasChart(),
-                            graficaPanel.getTrabajoChart()
+                            graficaPanel.getTrabajoChart(),
+                            fuerzaNetaSistema
                     );
 
+                    /*
+                 * FEEDBACK VISUAL
+                     */
                     Button boton
                     = bitacoraPanel.getGuardarButton();
 

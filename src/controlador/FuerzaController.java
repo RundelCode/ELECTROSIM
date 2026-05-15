@@ -28,31 +28,8 @@ public class FuerzaController {
                 );
 
                 fuerzas.add(fuerza);
-
-                imprimirFuerza(fuerza);
             }
         }
-    }
-
-    private void imprimirFuerza(Fuerza fuerza) {
-
-        System.out.println("------------");
-
-        System.out.println("INTERACCIÓN");
-
-        System.out.println(
-                fuerza.esRepulsion()
-                        ? "Tipo: Repulsión"
-                        : "Tipo: Atracción"
-        );
-
-        System.out.println("Distancia: " + fuerza.getDistancia());
-
-        System.out.println("Magnitud: " + fuerza.getMagnitud());
-
-        System.out.println("Fx: " + fuerza.getFuerzaX());
-
-        System.out.println("Fy: " + fuerza.getFuerzaY());
     }
 
     public List<Fuerza> getFuerzas() {

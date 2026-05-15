@@ -1,37 +1,68 @@
-
 package electrosim_c.Vistas;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import electrosim_c.Componentes.Header;
+import electrosim_c.Componentes.TheoryParser;
+
+import javafx.geometry.Insets;
+
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 public class Teoria {
-    
-    private VBox root;
 
-    public Teoria(Runnable goBack) {
-        root = new VBox(15);
-        root.setAlignment(Pos.TOP_CENTER);
-        root.getStyleClass().add("contenedor");
+    private BorderPane root;
 
-        Label titulo = new Label("ELECTROSIM");
-        titulo.getStyleClass().add("titulo");
-        titulo.setStyle("-fx-font-size: 40px;");
+    public Teoria(
+            Runnable goBack
+    ) {
 
-        Label info = new Label("Fundamentación Teorica");
-        info.getStyleClass().add("texto");
+        root
+                = new BorderPane();
 
-        Button back = new Button("Volver");
+        root.getStyleClass().add(
+                "contenedor"
+        );
 
-        back.setOnAction(e -> goBack.run());
+        Header header
+                = new Header(
+                        "Fundamentos teóricos",
+                        goBack
+                );
 
-        root.getChildren().addAll(titulo, info, back);
+        TheoryParser parser
+                = new TheoryParser();
+
+        VBox contenido
+                = parser.parse();
+
+        contenido.setSpacing(
+                20
+        );
+
+        contenido.setPadding(
+                new Insets(
+                        30,
+                        20,
+                        30,
+                        20
+                )
+        );
+
+        contenido.setFillWidth(
+                true
+        );
+
+        root.setTop(
+                header.getView()
+        );
+
+        root.setCenter(
+                contenido
+        );
     }
-    
-    
-    
-    public VBox getView() {
+
+    public BorderPane getView() {
+
         return root;
     }
 }

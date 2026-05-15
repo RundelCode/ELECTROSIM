@@ -2,7 +2,7 @@ package electrosim_c;
 
 import electrosim_c.Vistas.Buscador;
 import electrosim_c.Vistas.Inicio;
-import electrosim_c.Vistas.Registro;
+import electrosim_c.Vistas.RegistroView;
 import electrosim_c.Vistas.Simulador;
 import electrosim_c.Vistas.Teoria;
 import javafx.application.Application;
@@ -41,13 +41,13 @@ public class ELECTROSIM_C extends Application {
 
         stage.setResizable(false);
         stage.getIcons().add(
-        new Image(
-                getClass()
-                        .getResourceAsStream(
-                                "/electrosim_c/Recursos/Logo.png"
-                        )
-        )
-);
+                new Image(
+                        getClass()
+                                .getResourceAsStream(
+                                        "/electrosim_c/Recursos/Logo.png"
+                                )
+                )
+        );
 
         showInicio();
 
@@ -77,19 +77,43 @@ public class ELECTROSIM_C extends Application {
     }
 
     private void showBuscador() {
-        setSize(800, 600);
 
-        Buscador buscador = new Buscador(() -> showInicio());
+        setSize(
+                650,
+                500
+        );
 
-        setRootScrollable(buscador.getView());
+        Buscador buscador
+                = new Buscador(
+                        () -> showInicio(),
+                        registro -> showRegistro(
+                                registro
+                        )
+                );
+
+        setRootScrollable(
+                buscador.getView()
+        );
     }
 
-    private void showRegistro() {
-        setSize(700, 500);
+    private void showRegistro(
+            modelo.Registro registro
+    ) {
 
-        Registro registro = new Registro(() -> showInicio());
+        setSize(
+                1200,
+                800
+        );
 
-        setRootScrollable(registro.getView());
+        RegistroView vista
+                = new RegistroView(
+                        registro,
+                        () -> showBuscador()
+                );
+
+        setRootScrollable(
+                vista.getView()
+        );
     }
 
     private void showTeoria() {

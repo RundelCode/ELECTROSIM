@@ -11,12 +11,18 @@ import modelo.Registro;
 
 import javax.imageio.ImageIO;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+
+import java.time.LocalDateTime;
 
 import java.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class RegistroController {
@@ -28,14 +34,11 @@ public class RegistroController {
             Chart campo,
             Chart potencial,
             Chart fuerzas,
-            Chart trabajo
+            Chart trabajo,
+            double fuerzaNetaSistema
     ) {
 
         try {
-
-            System.out.println(
-                    "INICIANDO GUARDADO..."
-            );
 
             File carpetaSimulacion
                     = crearCarpetaSimulacion(
@@ -44,7 +47,8 @@ public class RegistroController {
 
             guardarMetadata(
                     carpetaSimulacion,
-                    registro
+                    registro,
+                    fuerzaNetaSistema
             );
 
             guardarCargas(
@@ -112,17 +116,171 @@ public class RegistroController {
                     )
             );
 
-            System.out.println(
-                    "GUARDADO EXITOSO"
-            );
-
-            System.out.println(
-                    carpetaSimulacion.getAbsolutePath()
-            );
-
         } catch (Exception e) {
 
             e.printStackTrace();
+        }
+    }
+
+    public List<Registro> cargarRegistros() {
+
+        List<Registro> registros
+                = new ArrayList<>();
+
+        File root
+                = new File(
+                        "bitacoras"
+                );
+
+        if (!root.exists()) {
+            return registros;
+        }
+
+        recorrer(
+                root,
+                registros
+        );
+
+        registros.sort(
+                Comparator.comparing(
+                        Registro::getFecha
+                ).reversed()
+        );
+
+        return registros;
+    }
+
+    private void recorrer(
+            File carpeta,
+            List<Registro> registros
+    ) {
+
+        File[] archivos
+                = carpeta.listFiles();
+
+        if (archivos == null) {
+            return;
+        }
+
+        for (File archivo : archivos) {
+
+            if (!archivo.isDirectory()) {
+                continue;
+            }
+
+            File metadata
+                    = new File(
+                            archivo,
+                            "metadata.txt"
+                    );
+
+            if (metadata.exists()) {
+
+                Registro registro
+                        = leerRegistro(
+                                metadata
+                        );
+
+                if (registro != null) {
+
+                    registros.add(
+                            registro
+                    );
+                }
+            }
+
+            recorrer(
+                    archivo,
+                    registros
+            );
+        }
+    }
+
+    private Registro leerRegistro(
+            File metadata
+    ) {
+
+        try {
+
+            BufferedReader reader
+                    = new BufferedReader(
+                            new FileReader(
+                                    metadata
+                            )
+                    );
+
+            String usuario = "";
+            String titulo = "";
+            String fechaTexto = "";
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                if (line.startsWith(
+                        "Usuario:"
+                )) {
+
+                    usuario
+                            = line.replace(
+                                    "Usuario:",
+                                    ""
+                            ).trim();
+                } else if (line.startsWith(
+                        "Titulo:"
+                )) {
+
+                    titulo
+                            = line.replace(
+                                    "Titulo:",
+                                    ""
+                            ).trim();
+                } else if (line.startsWith(
+                        "Fecha:"
+                )) {
+
+                    fechaTexto
+                            = line.replace(
+                                    "Fecha:",
+                                    ""
+                            ).trim();
+                }
+            }
+
+            reader.close();
+
+            Registro registro
+                    = new Registro(
+                            usuario,
+                            titulo,
+                            "",
+                            new ArrayList<>()
+                    );
+
+            registro.setFecha(
+                    LocalDateTime.parse(
+                            fechaTexto
+                    )
+            );
+
+            registro.setNombreArchivo(
+                    metadata
+                            .getParentFile()
+                            .getName()
+            );
+
+            return registro;
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "ERROR leyendo: "
+                    + metadata.getAbsolutePath()
+            );
+
+            e.printStackTrace();
+
+            return null;
         }
     }
 
@@ -179,7 +337,8 @@ public class RegistroController {
 
     private void guardarMetadata(
             File carpeta,
-            Registro registro
+            Registro registro,
+            double fuerzaNetaSistema
     ) throws Exception {
 
         File archivo
@@ -198,6 +357,13 @@ public class RegistroController {
         writer.write(
                 "Usuario: "
                 + registro.getUsuario()
+        );
+
+        writer.newLine();
+
+        writer.write(
+                "FuerzaNeta: "
+                + fuerzaNetaSistema
         );
 
         writer.newLine();

@@ -272,3 +272,114 @@
     -fx-padding: 8 0 8 0;
     -fx-alignment: center;
 }
+
+
+.theory-subtitle {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1B2563;
+}
+
+.texto {
+    -fx-font-size: 15px;
+    -fx-text-fill: #555555;
+    -fx-line-spacing: 4px;
+}
+
+.theory-title {
+    -fx-text-fill: #1B2563;
+    -fx-font-family: "Poppins ExtraBold";
+    -fx-font-size: 42px;
+    -fx-font-weight: bold;
+}
+
+.theory-subtitle {
+    -fx-text-fill: #1B2563;
+    -fx-font-family: "Poppins ExtraBold";
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-padding: 20 0 0 0;
+}
+
+.theory-section {
+    -fx-text-fill: #AA2E2E;
+    -fx-font-family: "Poppins ExtraBold";
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.theory-text {
+    -fx-text-fill: #5D647A;
+    -fx-font-family: "Inter Bold";
+    -fx-font-size: 15px;
+    -fx-line-spacing: 6px;
+    -fx-text-alignment: left;
+}
+
+.registro-card {
+    -fx-background-color: #9aa0b5;
+    -fx-background-radius: 16;
+    -fx-padding: 15;
+    -fx-cursor: hand;
+}
+
+.registro-card:hover {
+    -fx-background-color: #8b92aa;
+}
+
+.registro-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.registro-date {
+    -fx-text-fill: #e0e3ec;
+    -fx-font-size: 12px;
+}
+
+.registro-desc {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.registro-combo {
+    -fx-background-color: #9aa0b5;
+    -fx-background-radius: 8;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.registro-combo .list-cell {
+    -fx-text-fill: white;
+}
+
+.registro-combo:hover {
+    -fx-cursor: hand;
+}
+
+.resultado-card {
+    -fx-background-color: #9aa0b5;
+    -fx-background-radius: 12;
+    -fx-padding: 10;
+}
+
+.registro-item {
+
+    -fx-background-color: #9aa0b5;
+    -fx-text-fill: white;
+
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-background-radius: 8;
+
+    -fx-alignment: CENTER_LEFT;
+
+    -fx-padding: 8 12;
+}
+
+.registro-item:hover {
+
+    -fx-background-color: #1B2563;
+}

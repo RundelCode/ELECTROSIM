@@ -42,8 +42,16 @@ public class CargaCard {
         filaInputs.setAlignment(Pos.CENTER_LEFT);
 
         Button eliminar = new Button("ELIMINAR");
+
         eliminar.getStyleClass().add("btn-primary");
-        eliminar.setOnAction(e -> onDelete.run());
+
+        eliminar.setMaxWidth(
+                Double.MAX_VALUE
+        );
+
+        eliminar.setOnAction(
+                e -> onDelete.run()
+        );
 
         magnitudInput.setOnAction(e -> {
             try {
