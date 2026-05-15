@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Sistema {
 
-    public static final float K = 8.99e3f;
+    public static final float K = 8.99e9f;
 
     private float escalaPixelesAMetros;
 

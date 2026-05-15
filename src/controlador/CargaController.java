@@ -3,11 +3,11 @@ package controlador;
 import modelo.Carga;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Sistema;
 
 public class CargaController {
 
     private List<Carga> cargas;
-    private static final float K = 9_000_000_000f;
 
     public CargaController() {
         cargas = new ArrayList<>();
@@ -25,7 +25,7 @@ public class CargaController {
         float distancia = c1.obtenerDistancia(c2);
         if (distancia == 0) return 0;
 
-        return K * (c1.getCarga() * c2.getCarga()) / (distancia * distancia);
+        return Sistema.K * (c1.getCarga() * c2.getCarga()) / (distancia * distancia);
     }
 
     public void actualizarSistema(float deltaTiempo) {

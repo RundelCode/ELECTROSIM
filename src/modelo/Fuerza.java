@@ -2,8 +2,6 @@ package modelo;
 
 public class Fuerza {
 
-    private static final float K = 8.99e9f;
-
     private float magnitud;
     private float fuerzaX;
     private float fuerzaY;
@@ -11,7 +9,11 @@ public class Fuerza {
     private Carga cargaOrigen;
     private Carga cargaDestino;
 
-    public Fuerza(Carga cargaOrigen, Carga cargaDestino) {
+    public Fuerza(
+            Carga cargaOrigen,
+            Carga cargaDestino
+    ) {
+
         this.cargaOrigen = cargaOrigen;
         this.cargaDestino = cargaDestino;
 
@@ -20,57 +22,91 @@ public class Fuerza {
 
     private void calcular() {
 
-        float dx = cargaDestino.getPosicionX() - cargaOrigen.getPosicionX();
-        float dy = cargaDestino.getPosicionY() - cargaOrigen.getPosicionY();
+        float dx
+                = cargaDestino.getPosicionX()
+                - cargaOrigen.getPosicionX();
 
-        float distancia = (float) Math.sqrt(dx * dx + dy * dy);
+        float dy
+                = cargaDestino.getPosicionY()
+                - cargaOrigen.getPosicionY();
 
-        if (distancia < 1f) {
-            magnitud = 0;
-            fuerzaX = 0;
-            fuerzaY = 0;
-            return;
-        }
+        float distancia
+                = (float) Math.sqrt(
+                        dx * dx
+                        + dy * dy
+                );
 
-        magnitud = (K * cargaOrigen.getCarga() * cargaDestino.getCarga())
-                / (distancia * distancia);
+        distancia
+                = Math.max(
+                        0.15f,
+                        distancia
+                );
 
-        float nx = dx / distancia;
-        float ny = dy / distancia;
+        magnitud
+                = Math.abs(
+                        Sistema.K
+                        * cargaOrigen.getCarga()
+                        * cargaDestino.getCarga()
+                )
+                / (distancia
+                * distancia);
 
-        fuerzaX = magnitud * nx;
-        fuerzaY = magnitud * ny;
+        float nx
+                = dx / distancia;
+
+        float ny
+                = dy / distancia;
+
+        fuerzaX
+                = magnitud * nx;
+
+        fuerzaY
+                = magnitud * ny;
     }
 
     public boolean esRepulsion() {
-        return cargaOrigen.getCarga() * cargaDestino.getCarga() > 0;
+
+        return cargaOrigen.getCarga()
+                * cargaDestino.getCarga()
+                > 0;
     }
 
     public boolean esAtraccion() {
-        return cargaOrigen.getCarga() * cargaDestino.getCarga() < 0;
+
+        return cargaOrigen.getCarga()
+                * cargaDestino.getCarga()
+                < 0;
     }
 
     public float getDistancia() {
-        return cargaOrigen.obtenerDistancia(cargaDestino);
+
+        return cargaOrigen.obtenerDistancia(
+                cargaDestino
+        );
     }
 
     public float getMagnitud() {
+
         return magnitud;
     }
 
     public float getFuerzaX() {
+
         return fuerzaX;
     }
 
     public float getFuerzaY() {
+
         return fuerzaY;
     }
 
     public Carga getCargaOrigen() {
+
         return cargaOrigen;
     }
 
     public Carga getCargaDestino() {
+
         return cargaDestino;
     }
 }

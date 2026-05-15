@@ -12,9 +12,9 @@ public class CargaCard {
 
     private VBox root;
 
-    public CargaCard(Carga carga, Runnable onDelete, Runnable onUpdate) {
+    public CargaCard(int index, Carga carga, Runnable onDelete, Runnable onUpdate) {
 
-        Label titulo = new Label("CARGA Q1");
+        Label titulo = new Label("CARGA Q" + (index + 1));
         titulo.getStyleClass().add("card-title");
 
         Label magnitudLabel = new Label("MAGNITUD (COULOMBS)");

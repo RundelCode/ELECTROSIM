@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 
 public class ELECTROSIM_C extends Application {
 
@@ -39,6 +40,14 @@ public class ELECTROSIM_C extends Application {
         );
 
         stage.setResizable(false);
+        stage.getIcons().add(
+        new Image(
+                getClass()
+                        .getResourceAsStream(
+                                "/electrosim_c/Recursos/Logo.png"
+                        )
+        )
+);
 
         showInicio();
 
@@ -48,7 +57,7 @@ public class ELECTROSIM_C extends Application {
     }
 
     private void showInicio() {
-        setSize(455, 484);
+        setSize(455, 540);
 
         Inicio inicio = new Inicio(
                 () -> showSimulador(),
