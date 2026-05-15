@@ -12,3 +12,4 @@ El sistema permite:
 - Registrar y almacenar simulaciones junto con sus gráficas, configuraciones y observaciones en una bitácora experimental.
 
 El proyecto fue desarrollado bajo arquitectura MVC, combinando simulación física, visualización de datos y registro experimental en una interfaz interactiva.
+
